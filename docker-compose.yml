@@ -1,0 +1,45 @@
+services:
+  redis:
+    container_name: "redis_for_microservices"
+    image: "redis:6.2-alpine"
+    ports:
+      - 6379:6379
+
+  publisher:
+    container_name: importacoes_publisher
+    build:
+      context: ./importacoes
+      dockerfile: ./Dockerfile
+      target: dev
+    volumes:
+      - ./importacoes:/home/node
+      - /home/node/node_modules
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    environment:
+      - PORT=${PORT}
+    depends_on:
+      - redis
+    command: yarn start:dev
+
+  subscriber_microservice:
+    container_name: subscriber_microservice
+    restart: unless-stopped
+    build:
+      context: ./lambda-eventos-microservice
+      dockerfile: ./Dockerfile
+      target: dev
+    volumes:
+      - ./lambda-eventos-microservice:/home/node
+      - /home/node/node_modules
+    ports:
+      - 8082:8082
+    expose:
+      - 8082
+    environment:
+      - PORT=${PORT}
+    depends_on:
+      - redis
+    command: yarn start:dev
