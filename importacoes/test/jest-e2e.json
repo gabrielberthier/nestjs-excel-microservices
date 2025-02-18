@@ -1,0 +1,17 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@app/nest-multer": "<rootDir>/../libs/nest-multer/src",
+    "@app/nest-multer/(.*)": "<rootDir>/../libs/nest-multer/src/$1"
+  }
+}
