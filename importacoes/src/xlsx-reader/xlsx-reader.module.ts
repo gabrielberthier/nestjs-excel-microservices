@@ -13,7 +13,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'DELIVERY_SERVICE',
         transport: Transport.REDIS,
         options: {
-          host: 'redis',
+          host: 'redis_for_microservices',
           port: 6379,
         },
       },

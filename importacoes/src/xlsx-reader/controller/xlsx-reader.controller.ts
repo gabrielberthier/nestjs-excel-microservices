@@ -5,11 +5,13 @@ import {
   InternalServerErrorException,
   Post,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { MultipartFile } from '@fastify/multipart';
 import { XlsxReaderService } from '../service/xlsx-reader.service';
 import { BatcProcessorService } from '../service/batch-processor.service';
 import { ClientProxy } from '@nestjs/microservices';
+import { ContentTypeValidationGuard } from '../../content-type-validation/content-type-validation.guard';
 
 @Controller('xlsx-reader')
 export class XlsxReaderController {
@@ -22,6 +24,7 @@ export class XlsxReaderController {
   ) {}
 
   @Post('/upload')
+  @UseGuards(new ContentTypeValidationGuard())
   public async upload(
     @Request() request: { files: () => AsyncGenerator<MultipartFile> },
   ) {
@@ -32,7 +35,6 @@ export class XlsxReaderController {
         for await (const event of this.readerService.readFile(part.file)) {
           this.client.emit(event.name, event);
         }
-        await this.batchProcessor.cleanUp();
       }
 
       return { message: 'files uploaded' };

@@ -5,6 +5,17 @@ services:
     ports:
       - 6379:6379
 
+  mongo:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: test
+      MONGO_INITDB_DATABASE: mongodb-db
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongo_data:/data/db
+
   publisher:
     container_name: importacoes_publisher
     build:
@@ -22,6 +33,7 @@ services:
       - PORT=${PORT}
     depends_on:
       - redis
+      - mongo
     command: yarn start:dev
 
   subscriber_microservice:
@@ -42,4 +54,5 @@ services:
       - PORT=${PORT}
     depends_on:
       - redis
+      - mongo
     command: yarn start:dev

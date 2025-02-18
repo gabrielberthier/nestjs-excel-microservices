@@ -3,6 +3,7 @@ import { Readable } from 'stream';
 import { EventDto } from '../domain/event.dto';
 import * as ExcelJS from 'exceljs';
 import { featureToCamelCase, objToString } from '../seedwork/utilities';
+import { randomUUID } from 'crypto';
 
 export const charToByte = (c: string) => {
   return c.charCodeAt(0) < 128
@@ -53,6 +54,7 @@ export class XlsxReaderService {
     worksheetReader: ExcelJS.stream.xlsx.WorksheetReader,
   ): AsyncGenerator<EventDto> {
     let fields: string[] = [];
+    const batch_id = randomUUID().toString();
 
     for await (const row of worksheetReader) {
       if (row.hasValues) {
@@ -75,6 +77,7 @@ export class XlsxReaderService {
         );
 
         yield {
+          batch_id,
           name: removeAcento(row.worksheet.name)
             .replaceAll(' ', '_')
             .split('')
