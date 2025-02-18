@@ -42,7 +42,6 @@ export class XlsxReaderController {
       if (error instanceof BadRequestException) {
         throw error;
       }
-
       throw new InternalServerErrorException(`Error uploading files. ${error}`);
     }
   }
